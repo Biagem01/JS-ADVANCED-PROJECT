@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Owly - Ricerca Libri</title>
+    <link rel="stylesheet" href="CSS/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:ital,wght@0,200..800;1,200..800&family=Bebas+Neue&family=Dosis:wght@200..800&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Playfair+Display+SC:ital,wght@0,400;0,700;0,900;1,400;1,700;1,900&family=Raleway:ital,wght@0,100..900;1,100..900&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Syne+Mono&family=Yuji+Syuku&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>Ricerca Libri</h1>
+        <input type="text" id="search-box" placeholder="Inserisci categoria (es. fantasy)">
+        <button id="search-btn">Cerca</button>
+        <div id="loading" class="hidden">
+            <div class="spinner"></div> <!-- Questo è l'elemento che creerà l'animazione del cerchio -->
+        </div>
+        <div id="results"></div>
+        
+        <div id="book-details" class="hidden"></div>  <!-- Descrizione del libro -->
+        
+        <div class="pagination"> <!-- Paginazione sotto la descrizione -->
+            <button id="prev-page-btn" class="hidden">⬅️ Indietro</button>
+            <span id="page-number">Pagina 1</span>
+            <button id="next-page-btn" class="hidden">Avanti ➡️</button>
+        </div>
+    </div>
+    <script src="JS/script.js"></script>
+</body>
+</html>

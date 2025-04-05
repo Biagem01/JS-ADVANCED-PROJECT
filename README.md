@@ -45,6 +45,6 @@ JavaScript:
 - Ottimizzazione dell’accessibilità e maggiore supporto per mobile
 
 
-🔗 [Visita l'app Owly online](owly-ricercalibri.netlify.app)
-
+# Link
+owly-ricercalibri.netlify.app
 

@@ -20,6 +20,7 @@ document.getElementById("search-btn").addEventListener("click", function() {
     currentPage = 1;
     fetchBooks();
 });
+
 document.getElementById("prev-page-btn").addEventListener("click", function() {
     if (currentPage > 1 && !isLoading) {
         currentPage--;
@@ -34,7 +35,7 @@ document.getElementById("next-page-btn").addEventListener("click", function() {
     }
 });
 
-function fetchBooks() {
+async function fetchBooks() {
     isLoading = true;
     document.getElementById("loading").classList.remove("hidden");
     document.getElementById("results").innerHTML = "";
@@ -42,33 +43,33 @@ function fetchBooks() {
     const offset = (currentPage - 1) * limit;
     const url = `https://openlibrary.org/subjects/${currentCategory}.json?limit=${limit}&offset=${offset}`;
 
-    fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById("loading").classList.add("hidden");
-            isLoading = false;
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
 
-            if (!data.works || data.works.length === 0) {
-                document.getElementById("results").innerHTML = "<p>Nessun libro trovato.</p>";
-                return;
-            }
+        document.getElementById("loading").classList.add("hidden");
+        isLoading = false;
 
-            const resultsDiv = document.getElementById("results");
-            data.works.forEach(book => {
-                const bookElement = document.createElement("div");
-                bookElement.classList.add("book");
-                bookElement.innerHTML = `<strong>${book.title}</strong><br>Autori: ${book.authors ? book.authors.map(a => a.name).join(", ") : "Sconosciuto"}`;
-                bookElement.addEventListener("click", () => fetchBookDetails(book.key, bookElement));
-                resultsDiv.appendChild(bookElement);
-            });
+        if (!data.works || data.works.length === 0) {
+            document.getElementById("results").innerHTML = "<p>Nessun libro trovato.</p>";
+            return;
+        }
 
-            updatePagination(data.works.length);
-        })
-        .catch(error => {
-            console.error("Errore nel recupero dei dati:", error);
-            document.getElementById("loading").classList.add("hidden");
-            isLoading = false;
+        const resultsDiv = document.getElementById("results");
+        data.works.forEach(book => {
+            const bookElement = document.createElement("div");
+            bookElement.classList.add("book");
+            bookElement.innerHTML = `<strong>${book.title}</strong><br>Autori: ${book.authors ? book.authors.map(a => a.name).join(", ") : "Sconosciuto"}`;
+            bookElement.addEventListener("click", () => fetchBookDetails(book.key, bookElement));
+            resultsDiv.appendChild(bookElement);
         });
+
+        updatePagination(data.works.length);
+    } catch (error) {
+        console.error("Errore nel recupero dei dati:", error);
+        document.getElementById("loading").classList.add("hidden");
+        isLoading = false;
+    }
 }
 
 function updatePagination(resultsCount) {
@@ -77,10 +78,10 @@ function updatePagination(resultsCount) {
     document.getElementById("next-page-btn").classList.toggle("hidden", resultsCount < limit);
 }
 
-function fetchBookDetails(bookKey, bookElement) {
+async function fetchBookDetails(bookKey, bookElement) {
     // Controlla se il libro cliccato ha già una descrizione aperta
     const existingDescription = bookElement.nextElementSibling;
-    
+
     if (existingDescription && existingDescription.classList.contains("book-description")) {
         // Se esiste, rimuovila
         existingDescription.remove();
@@ -91,26 +92,25 @@ function fetchBookDetails(bookKey, bookElement) {
         // Recupera i dettagli del libro
         const url = `https://openlibrary.org${bookKey}.json`;
 
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                // Crea il div della descrizione
-                const descriptionDiv = document.createElement("div");
-                descriptionDiv.classList.add("book-description");
-                descriptionDiv.innerHTML = `
-                    <h3>${data.title}</h3>
-                    <p>${data.description ? (typeof data.description === "string" ? data.description : data.description.value) : "Descrizione non disponibile"}</p>
-                `;
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
 
-                // Inserisci la descrizione subito dopo il libro cliccato
-                bookElement.after(descriptionDiv);
+            // Crea il div della descrizione
+            const descriptionDiv = document.createElement("div");
+            descriptionDiv.classList.add("book-description");
+            descriptionDiv.innerHTML = `
+                <h3>${data.title}</h3>
+                <p>${data.description ? (typeof data.description === "string" ? data.description : data.description.value) : "Descrizione non disponibile"}</p>
+            `;
 
-                // Scorri verso la descrizione con un effetto smooth
-                descriptionDiv.scrollIntoView({ behavior: "smooth", block: "start" });
-            })
-            .catch(error => console.error("Errore nel recupero dei dettagli del libro:", error));
+            // Inserisci la descrizione subito dopo il libro cliccato
+            bookElement.after(descriptionDiv);
+
+            // Scorri verso la descrizione con un effetto smooth
+            descriptionDiv.scrollIntoView({ behavior: "smooth", block: "start" });
+        } catch (error) {
+            console.error("Errore nel recupero dei dettagli del libro:", error);
+        }
     }
 }
-
-
-

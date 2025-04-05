@@ -24,6 +24,12 @@ input, button {
     margin: 10px 0;
 }
 
+#search-box{
+    border-radius: 16px ;
+    width: 78%;
+    box-shadow: 0 4px 6px rgba(15, 18, 186, 0.5);
+}
+
 button {
     font-family: "Dosis", sans-serif;
     font-size: 17px;
